@@ -1,0 +1,46 @@
+version: '3'
+services:
+   bittrexmicrox:
+      image: 375749533262.dkr.ecr.us-east-2.amazonaws.com/bittrexmicrox:latest
+      networks:
+        - app_net
+      restart: on-failure
+
+   itcgateway:
+      image: 375749533262.dkr.ecr.us-east-2.amazonaws.com/itcgateway:latest
+      networks:
+        - app_net
+      restart: on-failure
+
+      depends_on:
+        - bittrexmicrox
+
+   telwebngrok:
+      image: 375749533262.dkr.ecr.us-east-2.amazonaws.com/telwebngrok:latest
+      networks:
+        - app_net
+      restart: on-failure
+
+   itctelegram:
+      image: 375749533262.dkr.ecr.us-east-2.amazonaws.com/telegram:latest
+      networks:
+        - app_net
+      restart: on-failure
+
+      depends_on:
+         - itcgateway
+         - telwebngrok
+   itcalerts:
+      image: 375749533262.dkr.ecr.us-east-2.amazonaws.com/alerts:latest
+      networks:
+        - app_net
+      restart: on-failure
+
+      depends_on:
+         - itcgateway
+
+
+
+networks:
+   app_net:
+      driver: bridge
